@@ -9,9 +9,32 @@ var game = new Game(canvas, update, render);
 var image = new Image();
 image.src = 'assets/pipes.png';
 
+// Array of pipes to use and the board they will be placed on
+var pipes = [];
+var elbos = [];
+var tees = [];
+var shorts = [];
+var longs = [];
+var board = [];
+
+// Set up board with 2 random pipes a starting pipe and ending pipe
+var startPipe = Math.floor(Math.random() * (pipes.length - 1));
+var endPipe = Math.floor(Math.random() * (pipes.length - 1));
+
+
 canvas.onclick = function(event) {
-  event.preventDefault();
-  // TODO: Place or rotate pipe tile
+    event.preventDefault();
+    // TODO: Place or rotate pipe tile
+    switch (event.which) {
+        case 1:
+            // Left mouse click
+            // Place pipe tile
+            break;
+        case 3:
+            // Right mouse click
+            // Rotate the pipe tile
+            break;
+    }
 }
 
 /**
@@ -50,6 +73,14 @@ function render(elapsedTime, ctx) {
   ctx.fillStyle = "#777777";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // TODO: Render the board
-
+    // TODO: Render the board
+  for (var y = 0; y < 5; y++) {
+      for (var x = 0; x < 6; x++) {
+          //var i = y * 6 + x;
+          // draw the back of the card (160x160px)
+          ctx.fillStyle = "#3333ff";
+          // 165 allows 2px of space between each card
+          ctx.fillRect(x * 165 + 20, y * 165 + 20, 160, 160);
+      }
+  }
 }
