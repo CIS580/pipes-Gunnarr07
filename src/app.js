@@ -11,10 +11,22 @@ image.src = 'assets/pipes.png';
 
 // Array of pipes to use and the board they will be placed on
 var pipes = [];
-var elbos = [];
+var cross = { x: 0, y: 0, width: 32, height: 32 };
+pipes.push(cross);
+var elbos = [
+    { x: 32, y: 32, width: 32, height: 32 },
+    { x: 64, y: 32, width: 32, height: 32 },
+    { x: 32, y: 64, width: 32, height: 32 },
+    { x: 64, y: 64, width: 32, height: 32 }
+];
+pipes.push(elbos);
 var tees = [];
 var shorts = [];
-var longs = [];
+var longs = [
+    { x: 32, y: 0, width: 32, height: 135 },
+    { x: 0, y: 32, width: 32, height: 135 }
+];
+pipes.push(longs);
 var board = [];
 
 // Set up board with 2 random pipes a starting pipe and ending pipe
