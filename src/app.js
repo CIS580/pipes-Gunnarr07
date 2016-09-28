@@ -43,13 +43,14 @@ pipes.push(shorts);
 
 // Array holding the different rotations of long straight pipes
 var longs = [
-    { x: 32, y: 0, width: 32, height: 135 },
-    { x: 0, y: 32, width: 32, height: 135 }
+    { x: 32, y: 0, width: 32, height: 96 },
+    { x: 0, y: 32, width: 32, height: 96 }
 ];
 pipes.push(longs);
 
 // Array of pipes and empty grides to start the game
 var board = [];
+
 
 // Set up board with 2 random pipes a starting pipe and ending pipe
 var startPipe = Math.floor(Math.random() * (pipes.length - 1));
