@@ -11,8 +11,12 @@ image.src = 'assets/pipes.png';
 
 // Array of pipes to use and the board they will be placed on
 var pipes = [];
-var cross = { x: 0, y: 0, width: 32, height: 32 };
+
+// The cross pipe
+var cross = [{ x: 0, y: 0, width: 32, height: 32 }];
 pipes.push(cross);
+
+// Array holding the different rotations of elbo pipes
 var elbos = [
     { x: 32, y: 32, width: 32, height: 32 },
     { x: 64, y: 32, width: 32, height: 32 },
@@ -20,13 +24,29 @@ var elbos = [
     { x: 64, y: 64, width: 32, height: 32 }
 ];
 pipes.push(elbos);
-var tees = [];
-var shorts = [];
+
+// Array holding the different rotations of T pipes
+var tees = [
+    { x: 32, y: 96, width: 32, height: 32 },
+    { x: 64, y: 96, width: 32, height: 32 },
+    { x: 32, y: 128, width: 32, height: 32 },
+    { x: 64, y: 128, width: 32, height: 32 }
+];
+pipes.push(tees);
+
+// Array holding the different rotations of short straight pipes
+var shorts = [
+
+];
+
+// Array holding the different rotations of long straight pipes
 var longs = [
     { x: 32, y: 0, width: 32, height: 135 },
     { x: 0, y: 32, width: 32, height: 135 }
 ];
 pipes.push(longs);
+
+// Array of pipes and empty grides to start the game
 var board = [];
 
 // Set up board with 2 random pipes a starting pipe and ending pipe
