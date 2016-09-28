@@ -36,8 +36,10 @@ pipes.push(tees);
 
 // Array holding the different rotations of short straight pipes
 var shorts = [
-
+    { x: 96, y: 32, width: 32, height: 32 },
+    { x: 90, y: 64, width: 32, height: 32 }
 ];
+pipes.push(shorts);
 
 // Array holding the different rotations of long straight pipes
 var longs = [
