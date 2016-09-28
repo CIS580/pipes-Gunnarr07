@@ -13,19 +13,22 @@ image.src = 'assets/pipes.png';
 // Array of pipes to use and the board they will be placed on
 var pipes = [];
 
+var startPipes = [];
+
 // The cross pipe
 var cross = { x: 0, y: 0, width: 32, height: 32 };
 pipes.push(cross);
 
 // Array holding the different rotations of elbo pipes
 var elbos = [
-    { x: 32, y: 32, width: 32, height: 32 },
-    { x: 64, y: 32, width: 32, height: 32 },
+    { x: 31, y: 31, width: 32, height: 32 },
+    { x: 62, y: 31, width: 32, height: 32 },
     { x: 32, y: 64, width: 32, height: 32 },
     { x: 64, y: 64, width: 32, height: 32 }
 ];
 elbos.forEach(function(elbo){
-    pipes.push(elbos);
+    pipes.push(elbo);
+    //startPipes(elbo);
 });
 
 // Array holding the different rotations of T pipes
@@ -36,7 +39,7 @@ var tees = [
     { x: 64, y: 128, width: 32, height: 32 }
 ];
 tees.forEach(function(tee){
-    pipes.push(tees);
+    pipes.push(tee);
 });
 
 // Array holding the different rotations of short straight pipes
@@ -49,14 +52,14 @@ pipes.push(shorts[1]);
 
 // Array holding the different rotations of long straight pipes
 var longs = [
-    { x: 32, y: 0, width: 30, height: 96 },
-    { x: 0, y: 32, width: 30, height: 96 }
+    { x: 30, y: 0, width: 97, height: 32 },
+    { x: 0, y: 31, width: 30, height: 97 }
 ];
 pipes.push(longs[0]);
 pipes.push(longs[1]);
 
-// Array of pipes and empty grides to start the game, length of 25 blocks
-var board = [];
+// Array of pipes and empty grides to start the game, length of 156 blocks
+var board = new Array(156);
 /*
 while (pipes.length > 0) {
     var index = Math.floor(Math.random() * (pipes.length - 1));
@@ -72,7 +75,15 @@ var nextPipe = pipes[i];
 // Set up board with 2 random pipes a starting pipe and ending pipe
 var startPipe = Math.floor(Math.random() * (pipes.length - 1));
 var endPipe = Math.floor(Math.random() * (pipes.length - 1));
+var startIndex = Math.floor(Math.random() * (board.length - 1));
+var endIndex = Math.floor(Math.random() * (board.length - 1));
 
+board[startIndex] = pipes[startPipe];
+board[endIndex] = pipes[endPipe];
+/*
+board.push({ pipe: pipes[startPipe], index: startIndex });
+board.push({ pipe: pipes[endIndex], index: endIndex });
+*/
 
 canvas.onclick = function(event) {
     event.preventDefault();
@@ -81,6 +92,11 @@ canvas.onclick = function(event) {
         case 1:
             // Left mouse click
             // Place pipe tile
+            /*
+                x = mouse.x/64
+                y = mouse.y/64
+                board[y * 14 - x] = nextPipe
+            */
             if(i < pipes.length){
                 nextPipe = pipes[i];
                 i++;
@@ -118,7 +134,7 @@ masterLoop(performance.now());
  * the number of milliseconds passed since the last frame.
  */
 function update(elapsedTime) {
-
+   // nextPipe = pipes[Math.floor(Math.random() * (pipes.length - 1))];
   // TODO: Advance the fluid
 }
 
@@ -144,10 +160,21 @@ function render(elapsedTime, ctx) {
     for (var y = 0; y < 12; y++) {
         for (var x = 1; x < 14; x++) {
             //var i = y * 6 + x;
-            // draw the back of the card (160x160px)
-            ctx.fillStyle = "#3333ff";
-            // 165 allows 2px of space between each card
-            ctx.fillRect(x * 69 + 20, y * 69 + 20, 64, 64);
+            var pipe = board[y * 14 + x];
+            if(pipe){
+                ctx.drawImage(image,
+                    // Source rect
+                    pipe.x, pipe.y, pipe.width, pipe.height,
+                    // Dest rect
+                    x * 69 + 20, y * 69 + 20, 64, 64
+                );
+            }
+            else{
+                // draw the back of the card (160x160px)
+                ctx.fillStyle = "#3333ff";
+                // 165 allows 2px of space between each card
+                ctx.fillRect(x * 69 + 20, y * 69 + 20, 64, 64);
+            }
         }
     }
 
