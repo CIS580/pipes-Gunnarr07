@@ -18,15 +18,15 @@ var pipes = [];
 var startPipes = [];
 
 // The cross pipe
-var cross = { x: 0, y: 0, width: 32, height: 32 };
+var cross = { x: 0, y: 0, width: 32, height: 32, type: "cross" };
 pipes.push(cross);
 
 // Array holding the different rotations of elbo pipes
 var elbows = [
-    { x: 31, y: 31, width: 32, height: 32 },
-    { x: 62, y: 31, width: 32, height: 32 },
-    { x: 32, y: 64, width: 32, height: 32 },
-    { x: 64, y: 64, width: 32, height: 32 }
+    { x: 31, y: 31, width: 32, height: 32, type: "elbow" },
+    { x: 62, y: 31, width: 32, height: 32, type: "elbow" },
+    { x: 32, y: 64, width: 32, height: 32, type: "elbow" },
+    { x: 64, y: 64, width: 32, height: 32, type: "elbow" }
 ];
 elbows.forEach(function(elbow){
     pipes.push(elbow);
@@ -35,10 +35,10 @@ elbows.forEach(function(elbow){
 
 // Array holding the different rotations of T pipes
 var tees = [
-    { x: 32, y: 96, width: 32, height: 32 },
-    { x: 64, y: 96, width: 32, height: 32 },
-    { x: 32, y: 128, width: 32, height: 32 },
-    { x: 64, y: 128, width: 32, height: 32 }
+    { x: 32, y: 96, width: 32, height: 32, type: "tee" },
+    { x: 64, y: 96, width: 32, height: 32, type: "tee" },
+    { x: 32, y: 128, width: 32, height: 32, type: "tee" },
+    { x: 64, y: 128, width: 32, height: 32, type: "tee" }
 ];
 tees.forEach(function(tee){
     pipes.push(tee);
@@ -46,22 +46,26 @@ tees.forEach(function(tee){
 
 // Array holding the different rotations of short straight pipes
 var shorts = [
-    { x: 96, y: 32, width: 32, height: 32 },
-    { x: 90, y: 64, width: 32, height: 32 }
+    { x: 96, y: 32, width: 32, height: 32, type: "short" },
+    { x: 90, y: 64, width: 32, height: 32, type: "short" }
 ];
 pipes.push(shorts[0]);
 pipes.push(shorts[1]);
 
 // Array holding the different rotations of long straight pipes
 var longs = [
-    { x: 30, y: 0, width: 97, height: 32 },
-    { x: 0, y: 31, width: 30, height: 97 }
+    { x: 30, y: 0, width: 97, height: 32, type: "long" },
+    { x: 0, y: 31, width: 30, height: 97, type: "long" }
 ];
 pipes.push(longs[0]);
 pipes.push(longs[1]);
 
 // Array of pipes and empty grides to start the game, length of 156 blocks
 var board = new Array(156);
+// var board = [];
+// for(var i = 0; i < 156; i++) {
+//     board[i] = {};
+// }
 /*
 while (pipes.length > 0) {
     var index = Math.floor(Math.random() * (pipes.length - 1));
@@ -90,8 +94,9 @@ board.push({ pipe: pipes[endIndex], index: endIndex });
 canvas.onclick = function(event) {
     event.preventDefault();
     // TODO: Place or rotate pipe tile
-    var x = Math.floor((event.offsetX - 20) / 64);
-    var y = Math.floor((event.offsetY - 20) / 64);
+    var x = Math.floor((event.offsetX - 20) / 69);
+    var y = Math.floor((event.offsetY - 20) / 69);
+    // var pipe = board[y * 13 - x];
     switch (event.which) {
         case 1:
             // Left mouse click
@@ -105,7 +110,7 @@ canvas.onclick = function(event) {
             // var x = (event.clientX - rec.x);
             // console.log("x: " + rec.x);
             // var y = (event.clientY - rec.y)/64;
-            board[y * 13 - x] = nextPipe
+            board[y * 13 - x] = nextPipe;
             if(i < pipes.length){
                 nextPipe = pipes[i];
                 i++;
@@ -118,6 +123,11 @@ canvas.onclick = function(event) {
         case 3:
             // Right mouse click
             // Rotate the pipe tile
+            // if(pipe.type == "elbow") {
+            //     elbows.forEach(function(elbow){
+            //         pipe = elbow;
+            //     });
+            // }
             break;
     }
 }
