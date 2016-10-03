@@ -10,6 +10,8 @@ var game = new Game(canvas, update, render);
 var image = new Image();
 image.src = 'assets/pipes.png';
 
+var debug = true;
+
 // Array of pipes to use and the board they will be placed on
 var pipes = [];
 
@@ -20,14 +22,14 @@ var cross = { x: 0, y: 0, width: 32, height: 32 };
 pipes.push(cross);
 
 // Array holding the different rotations of elbo pipes
-var elbos = [
+var elbows = [
     { x: 31, y: 31, width: 32, height: 32 },
     { x: 62, y: 31, width: 32, height: 32 },
     { x: 32, y: 64, width: 32, height: 32 },
     { x: 64, y: 64, width: 32, height: 32 }
 ];
-elbos.forEach(function(elbo){
-    pipes.push(elbo);
+elbows.forEach(function(elbow){
+    pipes.push(elbow);
     //startPipes(elbo);
 });
 
@@ -88,6 +90,8 @@ board.push({ pipe: pipes[endIndex], index: endIndex });
 canvas.onclick = function(event) {
     event.preventDefault();
     // TODO: Place or rotate pipe tile
+    var x = Math.floor((event.offsetX - 20) / 64);
+    var y = Math.floor((event.offsetY - 20) / 64);
     switch (event.which) {
         case 1:
             // Left mouse click
@@ -97,6 +101,11 @@ canvas.onclick = function(event) {
                 y = mouse.y/64
                 board[y * 14 - x] = nextPipe
             */
+            // var rec = canvas.getBoundingClientRect();
+            // var x = (event.clientX - rec.x);
+            // console.log("x: " + rec.x);
+            // var y = (event.clientY - rec.y)/64;
+            board[y * 13 - x] = nextPipe
             if(i < pipes.length){
                 nextPipe = pipes[i];
                 i++;
@@ -111,6 +120,15 @@ canvas.onclick = function(event) {
             // Rotate the pipe tile
             break;
     }
+}
+
+var currentIndex, currentX, currentY;
+canvas.onmousemove = function(event) {
+  event.preventDefault();
+  currentX = event.offsetX;
+  currentY = event.offsetY;
+  var x = Math.floor((currentX + 20));
+  var y = Math.floor((currentY + 20));
 }
 
 /**
@@ -158,26 +176,37 @@ function render(elapsedTime, ctx) {
 
     // TODO: Render the board
     for (var y = 0; y < 12; y++) {
-        for (var x = 1; x < 14; x++) {
+        for (var x = 1; x < 13; x++) {
             //var i = y * 6 + x;
-            var pipe = board[y * 14 + x];
+            var pipe = board[y * 13 + x];
             if(pipe){
                 ctx.drawImage(image,
                     // Source rect
                     pipe.x, pipe.y, pipe.width, pipe.height,
                     // Dest rect
-                    x * 69 + 20, y * 69 + 20, 64, 64
+                    x * 69 + 20, y * 69 + 20, 69, 69
                 );
             }
             else{
                 // draw the back of the card (160x160px)
-                ctx.fillStyle = "#3333ff";
+                // ctx.fillStyle = "#3333ff";
+                ctx.fillStyle = "grey";
                 // 165 allows 2px of space between each card
                 ctx.fillRect(x * 69 + 20, y * 69 + 20, 64, 64);
             }
         }
     }
 
+    if(debug){
+        var x = currentIndex % 13;
+        var y = Math.floor(currentIndex / 13);
+
+        ctx.fillStyle = "#ff0000";
+        ctx.beginPath();
+        ctx.arc(currentX, currentY, 3, 0, 2*Math.PI);
+        ctx.rect(x * 69 + 20, y * 69 + 20, 64, 64);
+        ctx.stroke();
+    }
 }
 
 },{"./game":2}],2:[function(require,module,exports){
