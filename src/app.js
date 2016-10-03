@@ -93,7 +93,7 @@ board.push({ pipe: pipes[endIndex], index: endIndex });
 canvas.onclick = function(event) {
     event.preventDefault();
     // TODO: Place or rotate pipe tile
-    var x = Math.floor((event.offsetX - 20) / 69);
+    var x = Math.floor((event.offsetX - 110) / 69);
     var y = Math.floor((event.offsetY - 20) / 69);
     // var pipe = board[y * 13 - x];
     switch (event.which) {
@@ -109,7 +109,7 @@ canvas.onclick = function(event) {
             // var x = (event.clientX - rec.x);
             // console.log("x: " + rec.x);
             // var y = (event.clientY - rec.y)/64;
-            board[y * 13 - x] = nextPipe;
+            board[y * 12 + x] = nextPipe;
             if(i < pipes.length){
                 nextPipe = pipes[i];
                 i++;
@@ -136,8 +136,9 @@ canvas.onmousemove = function(event) {
   event.preventDefault();
   currentX = event.offsetX;
   currentY = event.offsetY;
-  var x = Math.floor((currentX + 20));
-  var y = Math.floor((currentY + 20));
+  var x = Math.floor((currentX - 110) / 69);
+  var y = Math.floor((currentY - 20) / 69);
+  currentIndex = y * 12 + x;
 }
 
 /**
@@ -185,15 +186,15 @@ function render(elapsedTime, ctx) {
 
     // TODO: Render the board
     for (var y = 0; y < 12; y++) {
-        for (var x = 1; x < 13; x++) {
+        for (var x = 0; x < 12; x++) {
             //var i = y * 6 + x;
-            var pipe = board[y * 13 + x];
+            var pipe = board[y * 12 + x];
             if(pipe){
                 ctx.drawImage(image,
                     // Source rect
                     pipe.x, pipe.y, pipe.width, pipe.height,
                     // Dest rect
-                    x * 69 + 20, y * 69 + 20, 69, 69
+                    x * 69 + 110, y * 69 + 20, 69, 69
                 );
             }
             else{
@@ -201,19 +202,19 @@ function render(elapsedTime, ctx) {
                 // ctx.fillStyle = "#3333ff";
                 ctx.fillStyle = "grey";
                 // 165 allows 2px of space between each card
-                ctx.fillRect(x * 69 + 20, y * 69 + 20, 64, 64);
+                ctx.fillRect(x * 69 + 110, y * 69 + 20, 64, 64);
             }
         }
     }
 
     if(debug){
-        var x = currentIndex % 13;
-        var y = Math.floor(currentIndex / 13);
+        var x = currentIndex % 12;
+        var y = Math.floor(currentIndex / 12);
 
         ctx.fillStyle = "#ff0000";
         ctx.beginPath();
         ctx.arc(currentX, currentY, 3, 0, 2*Math.PI);
-        ctx.rect(x * 69 + 20, y * 69 + 20, 64, 64);
+        ctx.rect(x * 69 + 110, y * 69 + 20, 69, 69);
         ctx.stroke();
     }
 }
