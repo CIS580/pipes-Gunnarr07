@@ -91,7 +91,8 @@ board.push({ pipe: pipes[startPipe], index: startIndex });
 board.push({ pipe: pipes[endIndex], index: endIndex });
 */
 
-canvas.onclick = function(event) {
+canvas.onclick = clickhandler
+function clickhandler(event) {
     event.preventDefault();
     // TODO: Place or rotate pipe tile
     var x = Math.floor((event.offsetX - 110) / 69);
