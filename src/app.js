@@ -238,10 +238,20 @@ function update(elapsedTime) {
             var pipe = board[y * 12 + x];
             if (pipe) {
                 if (pipe.type == "elbow") {
-                    if (pipe.rotation == 1) {
+                    if (pipe.rotation == 0) {
+
+                    }
+                    else if (pipe.rotation == 1) {
+
+                    }
+                    else if (pipe.rotation == 2) {
+
+                    }
+                    else if (pipe.rotation == 3) {
 
                     }
                 }
+                
             }
         }
     }
