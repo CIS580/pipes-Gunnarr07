@@ -10,6 +10,9 @@ var image = new Image();
 image.src = 'assets/pipes.png';
 
 var debug = true;
+var placed = false;
+var state = "left click";
+var counter = 0;
 
 // Array of pipes to use and the board they will be placed on
 var pipes = [];
@@ -46,10 +49,20 @@ tees.forEach(function(tee){
 // Array holding the different rotations of short straight pipes
 var shorts = [
     { x: 96, y: 32, width: 32, height: 32, type: "short" },
-    { x: 90, y: 64, width: 32, height: 32, type: "short" }
+    { x: 96, y: 64, width: 32, height: 32, type: "short" }
 ];
 pipes.push(shorts[0]);
 pipes.push(shorts[1]);
+// pipes.push(shorts[0]);
+// pipes.push(shorts[1]);
+
+var i, j, temp;
+for (i= pipes.length; i; i--) {
+    j = Math.floor(Math.random() * i);
+    temp = pipes[i - 1];
+    pipes[i - 1] = pipes[j];
+    pipes[j] = temp;
+}
 
 // Array holding the different rotations of long straight pipes
 // var longs = [
@@ -90,36 +103,85 @@ board.push({ pipe: pipes[startPipe], index: startIndex });
 board.push({ pipe: pipes[endIndex], index: endIndex });
 */
 
-canvas.onclick = clickhandler
+
+
+
+canvas.onclick = clickhandler;
 function clickhandler(event) {
     event.preventDefault();
     // TODO: Place or rotate pipe tile
     var x = Math.floor((event.offsetX - 110) / 69);
     var y = Math.floor((event.offsetY - 20) / 69);
     // var pipe = board[y * 13 - x];
+    //event.which 1=left, 3=right
     switch (event.which) {
         case 1:
             // Left mouse click
             // Place pipe tile
-            board[y * 12 + x] = nextPipe;
-            if(i < pipes.length){
-                nextPipe = pipes[i];
-                i++;
-            }
-            else{
-                i = 0;
+            if (!board[y * 12 + x]) {
+                placed = true;
+                board[y * 12 + x] = nextPipe;
+                console.log("x: " + x + "y: " + y);
             }
 
             break;
-        case 3:
+        case 2:
             // Right mouse click
             // Rotate the pipe tile
-            // if(pipe.type == "elbow") {
-            //     elbows.forEach(function(elbow){
-            //         pipe = elbow;
-            //     });
-            // }
+            if (debug) {
+                console.log("rotate pipe");
+            }
+            if(pipe.type == "elbow") {
+                elbows.forEach(function(elbow){
+                    pipe = elbow;
+                });
+            }
             break;
+    }
+}
+
+canvas.oncontextmenu = function (event) {
+    event.preventDefault();
+    state = "right click";
+    canvas.onclick = clickhandler;
+    if (debug) {
+        console.log("context menu event");
+        console.log(state);
+    }
+    var x = Math.floor((event.offsetX - 110) / 69);
+    var y = Math.floor((event.offsetY - 20) / 69);
+    var pipe = board[y * 12 + x];
+    if (pipe) {
+        if(pipe.type == "elbow") {
+            if (counter < elbows.length - 1) {
+                board[y * 12 + x] = elbows[counter];
+                counter++;
+                if (debug) {
+                    console.log("counter: " + counter);
+                }
+            }
+            else {
+                counter = 0;
+            }
+        }
+        else if (pipe.type == "tee") {
+            if (counter < tees.length - 1) {
+                board[y * 12 + x] = tees[counter];
+                counter++;
+            }
+            else{
+                counter = 0;
+            }
+        }
+        else if (pipe.type == "short") {
+            if (counter < shorts.length - 1) {
+                board[y * 12 + x] = shorts[counter];
+                counter++;
+            }
+            else{
+                counter = 0;
+            }
+        }
     }
 }
 
@@ -154,7 +216,11 @@ masterLoop(performance.now());
  * the number of milliseconds passed since the last frame.
  */
 function update(elapsedTime) {
-   // nextPipe = pipes[Math.floor(Math.random() * (pipes.length - 1))];
+    // Check if pipe has been placed if so generate next random pipe
+    if (placed) {
+        nextPipe = pipes[Math.floor(Math.random() * (pipes.length - 1))];
+        placed = false;
+    }
   // TODO: Advance the fluid
 }
 
