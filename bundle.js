@@ -11,8 +11,12 @@ var image = new Image();
 image.src = 'assets/pipes.png';
 
 var debug = true;
-var placed = false;
+
+// If the next pip has been placed on the board
+var placed = false; 
 var state = "left click";
+
+// Counter for rotating pipes
 var counter = 0;
 
 // Array of pipes to use and the board they will be placed on
@@ -22,6 +26,7 @@ var startPipes = [];
 
 // The cross pipe
 var cross = { x: 0, y: 0, width: 32, height: 32, type: "cross" };
+pipes.push(cross);
 pipes.push(cross);
 
 // Array holding the different rotations of elbo pipes
@@ -54,8 +59,8 @@ var shorts = [
 ];
 pipes.push(shorts[0]);
 pipes.push(shorts[1]);
-// pipes.push(shorts[0]);
-// pipes.push(shorts[1]);
+pipes.push(shorts[0]);
+pipes.push(shorts[1]);
 
 var i, j, temp;
 for (i= pipes.length; i; i--) {
@@ -87,25 +92,25 @@ while (pipes.length > 0) {
 }
 */
 
-//var nextPipe = pipes[Math.floor(Math.random() * (pipes.length - 1))];
-var i = 0;
-var nextPipe = pipes[i];
+var nextPipe = pipes[Math.floor(Math.random() * pipes.length)];
 
 // Set up board with 2 random pipes a starting pipe and ending pipe
-var startPipe = Math.floor(Math.random() * (pipes.length - 1));
-var endPipe = Math.floor(Math.random() * (pipes.length - 1));
+// var startPipe = Math.floor(Math.random() * (pipes.length - 1));
+// var endPipe = Math.floor(Math.random() * (pipes.length - 1));
+var startPipe = shorts[0];
+var endPipe = shorts[0];
 var startIndex = Math.floor(Math.random() * (board.length - 1));
 var endIndex = Math.floor(Math.random() * (board.length - 1));
 
-board[startIndex] = pipes[startPipe];
-board[endIndex] = pipes[endPipe];
+// board[startIndex] = pipes[startPipe];
+// board[endIndex] = pipes[endPipe];
+board[startIndex] = startPipe;
+board[endIndex] = endPipe;
+
 /*
 board.push({ pipe: pipes[startPipe], index: startIndex });
 board.push({ pipe: pipes[endIndex], index: endIndex });
 */
-
-
-
 
 canvas.onclick = clickhandler;
 function clickhandler(event) {
@@ -154,7 +159,7 @@ canvas.oncontextmenu = function (event) {
     var pipe = board[y * 12 + x];
     if (pipe) {
         if(pipe.type == "elbow") {
-            if (counter < elbows.length - 1) {
+            if (counter <= elbows.length - 1) {
                 board[y * 12 + x] = elbows[counter];
                 counter++;
                 if (debug) {
@@ -166,7 +171,7 @@ canvas.oncontextmenu = function (event) {
             }
         }
         else if (pipe.type == "tee") {
-            if (counter < tees.length - 1) {
+            if (counter <= tees.length - 1) {
                 board[y * 12 + x] = tees[counter];
                 counter++;
             }
@@ -175,8 +180,11 @@ canvas.oncontextmenu = function (event) {
             }
         }
         else if (pipe.type == "short") {
-            if (counter < shorts.length - 1) {
+            if (counter <= shorts.length - 1) {
                 board[y * 12 + x] = shorts[counter];
+                if (debug) {
+                    console.log("rotate short counter: " + counter);
+                }
                 counter++;
             }
             else{
@@ -219,10 +227,12 @@ masterLoop(performance.now());
 function update(elapsedTime) {
     // Check if pipe has been placed if so generate next random pipe
     if (placed) {
-        nextPipe = pipes[Math.floor(Math.random() * (pipes.length - 1))];
+        nextPipe = pipes[Math.floor(Math.random() * pipes.length)];
         placed = false;
     }
-  // TODO: Advance the fluid
+
+    // TODO: Advance the fluid
+
 }
 
 /**
@@ -255,6 +265,9 @@ function render(elapsedTime, ctx) {
                     // Dest rect
                     x * 69 + 110, y * 69 + 20, 69, 69
                 );
+                // render water
+                ctx.fillStyle = "#3333ff";
+                ctx.fillRect(x * 69 + 110, y * 69 + 20, 20, 10);
             }
             else{
                 // draw the back of the card (160x160px)
