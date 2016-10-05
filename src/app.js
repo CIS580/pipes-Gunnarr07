@@ -14,6 +14,8 @@ var debug = true;
 // If the next pip has been placed on the board
 var placed = false; 
 var state = "left click";
+var waterW;
+var waterH;
 
 // Counter for rotating pipes
 var counter = 0;
@@ -30,10 +32,10 @@ pipes.push(cross);
 
 // Array holding the different rotations of elbo pipes
 var elbows = [
-    { x: 32, y: 32, width: 32, height: 32, type: "elbow" },
-    { x: 62, y: 31, width: 32, height: 32, type: "elbow" },
-    { x: 32, y: 64, width: 32, height: 32, type: "elbow" },
-    { x: 64, y: 64, width: 32, height: 32, type: "elbow" }
+    { x: 31.5, y: 31.5, width: 32, height: 32, type: "elbow", rotation: "" },
+    { x: 63, y: 31.5, width: 32, height: 32, type: "elbow", rotation: "" },
+    { x: 31.5, y: 63, width: 32, height: 32, type: "elbow", rotation: "" },
+    { x: 63, y: 63, width: 32, height: 32, type: "elbow", rotation: "" }
 ];
 elbows.forEach(function(elbow){
     pipes.push(elbow);
@@ -42,10 +44,10 @@ elbows.forEach(function(elbow){
 
 // Array holding the different rotations of T pipes
 var tees = [
-    { x: 32, y: 96, width: 32, height: 32, type: "tee" },
-    { x: 64, y: 96, width: 32, height: 32, type: "tee" },
-    { x: 32, y: 128, width: 32, height: 32, type: "tee" },
-    { x: 64, y: 128, width: 32, height: 32, type: "tee" }
+    { x: 31.5, y: 94.5, width: 32, height: 32, type: "tee", rotation: "" },
+    { x: 63, y: 94.5, width: 32, height: 32, type: "tee", rotation: "" },
+    { x: 31.5, y: 126, width: 32, height: 32, type: "tee", rotation: "" },
+    { x: 63, y: 126, width: 32, height: 32, type: "tee", rotation: "" }
 ];
 tees.forEach(function(tee){
     pipes.push(tee);
@@ -53,8 +55,8 @@ tees.forEach(function(tee){
 
 // Array holding the different rotations of short straight pipes
 var shorts = [
-    { x: 96, y: 32, width: 32, height: 32, type: "short" },
-    { x: 96, y: 64, width: 32, height: 32, type: "short" }
+    { x: 94.5, y: 31.5, width: 32, height: 32, type: "short", rotation: "verticle" },
+    { x: 94.5, y: 63, width: 32, height: 32, type: "short", rotation: "horizontal" }
 ];
 pipes.push(shorts[0]);
 pipes.push(shorts[1]);
@@ -231,7 +233,11 @@ function update(elapsedTime) {
     }
 
     // TODO: Advance the fluid
-
+    for (var y = 0; y < 12; y++) {
+        for (var x = 0; x < 12; x++) {
+            var pip = board[y * 12 + x];
+        }
+    }
 }
 
 /**
@@ -258,19 +264,20 @@ function render(elapsedTime, ctx) {
             //var i = y * 6 + x;
             var pipe = board[y * 12 + x];
             if(pipe){
+                // render water
+                ctx.fillStyle = "#3333ff";
+                ctx.fillRect((x * 69 + 110), (y * 69 + 20) + 30, 30, 10);
+                
                 ctx.drawImage(image,
                     // Source rect
                     pipe.x, pipe.y, pipe.width, pipe.height,
                     // Dest rect
                     x * 69 + 110, y * 69 + 20, 69, 69
                 );
-                // render water
-                ctx.fillStyle = "#3333ff";
-                ctx.fillRect(x * 69 + 110, y * 69 + 20, 20, 10);
             }
             else{
                 // draw the back of the card (160x160px)
-                // ctx.fillStyle = "#3333ff";
+                 // ctx.fillStyle = "#3333ff";
                 ctx.fillStyle = "grey";
                 // 165 allows 2px of space between each card
                 ctx.fillRect(x * 69 + 110, y * 69 + 20, 64, 64);
