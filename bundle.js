@@ -24,6 +24,8 @@ var counter = 0;
 // Array of pipes to use and the board they will be placed on
 var pipes = [];
 
+var water = [];
+
 var startPipes = [];
 
 // The cross pipe
@@ -252,7 +254,28 @@ function update(elapsedTime) {
 
                     }
                 }
-                
+                if (pipe.type == "tee") {
+                    if (pipe.rotation == 0) {
+
+                    }
+                    else if (pipe.rotation == 1) {
+
+                    }
+                    else if (pipe.rotation == 2) {
+
+                    }
+                    else if (pipe.rotation == 3) {
+
+                    }
+                }
+                if (pipe.type == "short") {
+                    if (pipe.rotation == 0) {
+                        
+                    }
+                    else if (pipe.rotation == 1) {
+
+                    }
+                }
             }
         }
     }
