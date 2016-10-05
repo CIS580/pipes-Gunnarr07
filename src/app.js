@@ -22,7 +22,7 @@ pipes.push(cross);
 
 // Array holding the different rotations of elbo pipes
 var elbows = [
-    { x: 31, y: 31, width: 32, height: 32, type: "elbow" },
+    { x: 32, y: 32, width: 32, height: 32, type: "elbow" },
     { x: 62, y: 31, width: 32, height: 32, type: "elbow" },
     { x: 32, y: 64, width: 32, height: 32, type: "elbow" },
     { x: 64, y: 64, width: 32, height: 32, type: "elbow" }
@@ -52,12 +52,12 @@ pipes.push(shorts[0]);
 pipes.push(shorts[1]);
 
 // Array holding the different rotations of long straight pipes
-var longs = [
-    { x: 30, y: 0, width: 97, height: 32, type: "long" },
-    { x: 0, y: 31, width: 30, height: 97, type: "long" }
-];
-pipes.push(longs[0]);
-pipes.push(longs[1]);
+// var longs = [
+//     { x: 30, y: 0, width: 97, height: 32, type: "long" },
+//     { x: 0, y: 31, width: 30, height: 97, type: "long" }
+// ];
+// pipes.push(longs[0]);
+// pipes.push(longs[1]);
 
 // Array of pipes and empty grides to start the game, length of 156 blocks
 var board = new Array(156);
@@ -101,15 +101,6 @@ function clickhandler(event) {
         case 1:
             // Left mouse click
             // Place pipe tile
-            /*
-                x = mouse.x/64
-                y = mouse.y/64
-                board[y * 14 - x] = nextPipe
-            */
-            // var rec = canvas.getBoundingClientRect();
-            // var x = (event.clientX - rec.x);
-            // console.log("x: " + rec.x);
-            // var y = (event.clientY - rec.y)/64;
             board[y * 12 + x] = nextPipe;
             if(i < pipes.length){
                 nextPipe = pipes[i];
@@ -182,7 +173,7 @@ function render(elapsedTime, ctx) {
         // Source rect
         nextPipe.x, nextPipe.y, nextPipe.width, nextPipe.height,
         // Dest rect
-        0, 100, 64, 64
+        15, 100, 64, 64
     );
 
     // TODO: Render the board
