@@ -32,10 +32,10 @@ pipes.push(cross);
 
 // Array holding the different rotations of elbo pipes
 var elbows = [
-    { x: 31.5, y: 31.5, width: 32, height: 32, type: "elbow", rotation: "" },
-    { x: 63, y: 31.5, width: 32, height: 32, type: "elbow", rotation: "" },
-    { x: 31.5, y: 63, width: 32, height: 32, type: "elbow", rotation: "" },
-    { x: 63, y: 63, width: 32, height: 32, type: "elbow", rotation: "" }
+    { x: 31.5, y: 31.5, width: 32, height: 32, type: "elbow", rotation: 0 },
+    { x: 63, y: 31.5, width: 32, height: 32, type: "elbow", rotation: 1 },
+    { x: 31.5, y: 63, width: 32, height: 32, type: "elbow", rotation: 2 },
+    { x: 63, y: 63, width: 32, height: 32, type: "elbow", rotation: 3 }
 ];
 elbows.forEach(function(elbow){
     pipes.push(elbow);
@@ -44,10 +44,10 @@ elbows.forEach(function(elbow){
 
 // Array holding the different rotations of T pipes
 var tees = [
-    { x: 31.5, y: 94.5, width: 32, height: 32, type: "tee", rotation: "" },
-    { x: 63, y: 94.5, width: 32, height: 32, type: "tee", rotation: "" },
-    { x: 31.5, y: 126, width: 32, height: 32, type: "tee", rotation: "" },
-    { x: 63, y: 126, width: 32, height: 32, type: "tee", rotation: "" }
+    { x: 31.5, y: 94.5, width: 32, height: 32, type: "tee", rotation: 0 },
+    { x: 63, y: 94.5, width: 32, height: 32, type: "tee", rotation: 1 },
+    { x: 31.5, y: 126, width: 32, height: 32, type: "tee", rotation: 2 },
+    { x: 63, y: 126, width: 32, height: 32, type: "tee", rotation: 3 }
 ];
 tees.forEach(function(tee){
     pipes.push(tee);
@@ -55,8 +55,8 @@ tees.forEach(function(tee){
 
 // Array holding the different rotations of short straight pipes
 var shorts = [
-    { x: 94.5, y: 31.5, width: 32, height: 32, type: "short", rotation: "verticle" },
-    { x: 94.5, y: 63, width: 32, height: 32, type: "short", rotation: "horizontal" }
+    { x: 94.5, y: 31.5, width: 32, height: 32, type: "short", rotation: 0 },
+    { x: 94.5, y: 63, width: 32, height: 32, type: "short", rotation: 1 }
 ];
 pipes.push(shorts[0]);
 pipes.push(shorts[1]);
@@ -235,7 +235,14 @@ function update(elapsedTime) {
     // TODO: Advance the fluid
     for (var y = 0; y < 12; y++) {
         for (var x = 0; x < 12; x++) {
-            var pip = board[y * 12 + x];
+            var pipe = board[y * 12 + x];
+            if (pipe) {
+                if (pipe.type == "elbow") {
+                    if (pipe.rotation == 1) {
+
+                    }
+                }
+            }
         }
     }
 }
