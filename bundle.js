@@ -3,6 +3,7 @@
 
 /* Classes */
 const Game = require('./game');
+const MS_PER_FRAME = 1000/8;
 
 /* Global variables */
 var canvas = document.getElementById('screen');
@@ -15,8 +16,7 @@ var debug = true;
 // If the next pip has been placed on the board
 var placed = false; 
 var state = "left click";
-var waterW;
-var waterH;
+var timer = 0;
 
 // Counter for rotating pipes
 var counter = 0;
@@ -94,12 +94,13 @@ var startPipe = shorts[0];
 var endPipe = shorts[0];
 var startIndex = Math.floor(Math.random() * (board.length - 1));
 var endIndex = Math.floor(Math.random() * (board.length - 1));
+var previousIndex = startIndex;
 
 // board[startIndex] = pipes[startPipe];
 // board[endIndex] = pipes[endPipe];
-board[startIndex] = { pipe: startPipe, water: { startX: 0, startY: 0, endX: 0, endY: 0 } };
+board[startIndex] = { pipe: startPipe, water: { startX: 0, startY: 30, endX: 0, endY: 0, filled: false } };
 console.log("pipe: " + board[startIndex].pipe.type);
-board[endIndex] = { pipe: endPipe, water: { startX: 0, startY: 0, endX: 0, endY: 0 } } ;
+board[endIndex] = { pipe: endPipe, water: { startX: 0, startY: 30, endX: 0, endY: 0, filled: false } } ;
 
 /*
 board.push({ pipe: pipes[startPipe], index: startIndex });
@@ -126,7 +127,8 @@ function clickhandler(event) {
                         startX: 0,
                         startY: 0,
                         endX: 0,
-                        endY: 0
+                        endY: 0,
+                        filled: false
                     }
                 };
                 console.log("x: " + x + "y: " + y);
@@ -158,7 +160,6 @@ canvas.oncontextmenu = function (event) {
     }
     var x = Math.floor((event.offsetX - 150) / 64);
     var y = Math.floor((event.offsetY - 20) / 64);
-    var board = board[y * 13 + x];
     if (board[y * 13 + x]) {
         var pipe = board[y * 13 + x].pipe;
         if(pipe.type == "elbow") {
@@ -169,7 +170,8 @@ canvas.oncontextmenu = function (event) {
                         startX: 0,
                         startY: 0,
                         endX: 0,
-                        endY: 0
+                        endY: 0,
+                        filled: false
                     }
                 };
                 counter++;
@@ -189,7 +191,8 @@ canvas.oncontextmenu = function (event) {
                         startX: 0,
                         startY: 0,
                         endX: 0,
-                        endY: 0
+                        endY: 0,
+                        filled: false
                     }
                 };
                 counter++;
@@ -206,7 +209,8 @@ canvas.oncontextmenu = function (event) {
                         startX: 0,
                         startY: 0,
                         endX: 0,
-                        endY: 0
+                        endY: 0,
+                        filled: false
                     }
                 };
                 if (debug) {
@@ -259,49 +263,81 @@ function update(elapsedTime) {
     }
 
     // TODO: Advance the fluid
-    // for (var y = 0; y < 13; y++) {
-    //     for (var x = 0; x < 13; x++) {
-    //         if (board[y * 13 + x]) {
-    //             var pipe = board[y * 13 + x].pipe;
-    //             if (pipe.type == "elbow") {
-    //                 if (pipe.rotation == 0) {
+    for (var y = 0; y < 13; y++) {
+        for (var x = 0; x < 13; x++) {
+            var index = y * 13 + x;
+            console.log("index: " + index);
+            if (board[index]) {
+                var pipe = board[index].pipe;
+                var water = board[index].water;
+                if (debug) {
+                    //console.log("index: " + index);
+                    //console.log("previousIndex: " + previousIndex);
+                }
+                timer += elapsedTime;
+                if (index == previousIndex && !water.filled && timer > MS_PER_FRAME) {
+                    timer = 0;
+                    //console.log("moving water");
+                    if (pipe.type == "elbow") {
+                        if (pipe.rotation == 0) {
 
-    //                 }
-    //                 else if (pipe.rotation == 1) {
+                        }
+                        else if (pipe.rotation == 1) {
 
-    //                 }
-    //                 else if (pipe.rotation == 2) {
+                        }
+                        else if (pipe.rotation == 2) {
 
-    //                 }
-    //                 else if (pipe.rotation == 3) {
+                        }
+                        else if (pipe.rotation == 3) {
 
-    //                 }
-    //             }
-    //             if (pipe.type == "tee") {
-    //                 if (pipe.rotation == 0) {
+                        }
+                    }
+                    if (pipe.type == "tee") {
+                        if (pipe.rotation == 0) {
 
-    //                 }
-    //                 else if (pipe.rotation == 1) {
+                        }
+                        else if (pipe.rotation == 1) {
 
-    //                 }
-    //                 else if (pipe.rotation == 2) {
+                        }
+                        else if (pipe.rotation == 2) {
 
-    //                 }
-    //                 else if (pipe.rotation == 3) {
+                        }
+                        else if (pipe.rotation == 3) {
 
-    //                 }
-    //             }
-    //             if (pipe.type == "short") {
-    //                 if (pipe.rotation == 0) {
-                        
-    //                 }
-    //                 else if (pipe.rotation == 1) {
+                        }
+                    }
+                    if (pipe.type == "short") {
+                        if (pipe.rotation == 0) {
+                            if (water.startX != 54 && !water.filled) {
+                                water.startX++;
+                            }
+                            else{
+                                water.filled = true;
+                                console.log("pipe filled: ");
+                            }
+                        }
+                        else if (pipe.rotation == 1) {
 
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+                        }
+                    }
+                }
+                else if (index == previousIndex && water.filled) {
+                    var nextIndex;
+                    if (x + 1 < 13) {
+                        nextIndex = y * 13 + (x + 1);
+                    }
+                    else {
+                        nextIndex = (y + 1) * 13 + 0;
+                    }
+                    
+                    if (board[nextIndex]){
+                        previousIndex = nextIndex;
+                        console.log("next pipe: " + nextIndex);
+                    }
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -328,13 +364,11 @@ function render(elapsedTime, ctx) {
             ctx.strokeStyle = '#333333';
             ctx.strokeRect(x * 64 + 150, y * 64 + 20, 64, 64);
             if (board[y * 13 + x]){
-                console.log("board: " + board[y * 13 + x].pipe.x);
                 var pipe = board[y * 13 + x].pipe;
                 var water = board[y * 13 + x].water;
                 // render water
                 ctx.fillStyle = "#3333ff";
-                ctx.fillRect((x * 64 + 150) + water.x, (y * 64 + 20) + water.y, 10, 10);
-                console.log("pipe: " + pipe.x);
+                ctx.fillRect((x * 64 + 150) + water.startX, (y * 64 + 20) + water.startY, 10, 10);
                 ctx.drawImage(image,
                     // Source rect
                     pipe.x, pipe.y, pipe.width, pipe.height,
