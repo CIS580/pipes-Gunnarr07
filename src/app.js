@@ -23,10 +23,6 @@ var counter = 0;
 // Array of pipes to use and the board they will be placed on
 var pipes = [];
 
-var water = [];
-
-var startPipes = [];
-
 // The cross pipe
 var cross = { x: 0, y: 0, width: 32, height: 32, type: "cross" };
 pipes.push(cross);
@@ -41,7 +37,6 @@ var elbows = [
 ];
 elbows.forEach(function(elbow){
     pipes.push(elbow);
-    //startPipes(elbo);
 });
 
 // Array holding the different rotations of T pipes
@@ -73,38 +68,20 @@ for (i= pipes.length; i; i--) {
     pipes[j] = temp;
 }
 
-// Array holding the different rotations of long straight pipes
-// var longs = [
-//     { x: 30, y: 0, width: 97, height: 32, type: "long" },
-//     { x: 0, y: 31, width: 30, height: 97, type: "long" }
-// ];
-// pipes.push(longs[0]);
-// pipes.push(longs[1]);
-
 // Array of pipes and empty grides to start the game, length of 156 blocks
 var board = new Array(169);
 
 var nextPipe = pipes[Math.floor(Math.random() * pipes.length)];
 
-// Set up board with 2 random pipes a starting pipe and ending pipe
-// var startPipe = Math.floor(Math.random() * (pipes.length - 1));
-// var endPipe = Math.floor(Math.random() * (pipes.length - 1));
 var startPipe = shorts[0];
 var endPipe = shorts[0];
 var startIndex = Math.floor(Math.random() * (board.length - 1));
 var endIndex = Math.floor(Math.random() * (board.length - 1));
-var previousIndex = startIndex;
+var currIndex = startIndex;
+var previousIndex;
 
-// board[startIndex] = pipes[startPipe];
-// board[endIndex] = pipes[endPipe];
-board[startIndex] = { pipe: startPipe, water: { startX: 0, startY: 30, width: 10, height: 10, filled: false } };
-console.log("pipe: " + board[startIndex].pipe.type);
-board[endIndex] = { pipe: endPipe, water: { startX: 0, startY: 30, width: 10, height: 10, filled: false } } ;
-
-/*
-board.push({ pipe: pipes[startPipe], index: startIndex });
-board.push({ pipe: pipes[endIndex], index: endIndex });
-*/
+board[startIndex] = { pipe: startPipe, water: { startX: 0, startY: 30, width: 10, height: 10, filled: false, initalized: true } };
+board[endIndex] = { pipe: endPipe, water: { startX: 0, startY: 30, width: 0, height: 0, filled: false, initalized: false } };
 
 canvas.onclick = clickhandler;
 function clickhandler(event) {
@@ -113,7 +90,7 @@ function clickhandler(event) {
     var x = Math.floor((event.offsetX - 150) / 64);
     var y = Math.floor((event.offsetY - 20) / 64);
     // var pipe = board[y * 13 - x];
-    //event.which 1=left, 3=right
+    //event.which 1=left, 2=right
     switch (event.which) {
         case 1:
             // Left mouse click
@@ -125,9 +102,10 @@ function clickhandler(event) {
                     water: {
                         startX: 0,
                         startY: 0,
-                        width: 10,
-                        height: 10,
-                        filled: false
+                        width: 0,
+                        height: 0,
+                        filled: false,
+                        initalized: false
                     }
                 };
                 console.log("x: " + x + "y: " + y);
@@ -163,54 +141,17 @@ canvas.oncontextmenu = function (event) {
         var pipe = board[y * 13 + x].pipe;
         if(pipe.type == "elbow") {
             if (counter <= elbows.length - 1) {
-                if (pipe.rotation == 0 && counter == 0) {
-                    board[y * 13 + x] = {
-                        pipe: elbows[counter],
-                        water: {
-                            startX: 0,
-                            startY: 0,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
-                else if (pipe.rotation == 1 && counter == 1) {
-                    board[y * 13 + x] = {
-                        pipe: elbows[counter],
-                        water: {
-                            startX: 0,
-                            startY: 0,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
-                else if (pipe.rotation == 2 && counter == 2) {
-                    board[y * 13 + x] = {
-                        pipe: elbows[counter],
-                        water: {
-                            startX: 0,
-                            startY: 0,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
-                else if (pipe.rotation == 3 && counter == 3) {
-                    board[y * 13 + x] = {
-                        pipe: elbows[counter],
-                        water: {
-                            startX: 0,
-                            startY: 0,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
+                board[y * 13 + x] = {
+                    pipe: elbows[counter],
+                    water: {
+                        startX: 0,
+                        startY: 0,
+                        width: 0,
+                        height: 0,
+                        filled: false,
+                        initalized: false
+                    }
+                };
                 counter++;
                 if (debug) {
                     console.log("counter: " + counter);
@@ -222,54 +163,17 @@ canvas.oncontextmenu = function (event) {
         }
         else if (pipe.type == "tee") {
             if (counter <= tees.length - 1) {
-                if (pipe.rotation == 0 && counter == 0) {
-                    board[y * 13 + x] = {
-                        pipe: tees[counter],
-                        water: {
-                            startX: 0,
-                            startY: 0,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
-                else if (pipe.rotation == 1 && counter == 1) {
-                    board[y * 13 + x] = {
-                        pipe: tees[counter],
-                        water: {
-                            startX: 0,
-                            startY: 0,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
-                else if (pipe.rotation == 2 && counter == 2) {
-                    board[y * 13 + x] = {
-                        pipe: tees[counter],
-                        water: {
-                            startX: 0,
-                            startY: 0,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
-                else if (pipe.rotation == 3 && counter == 3) {
-                    board[y * 13 + x] = {
-                        pipe: tees[counter],
-                        water: {
-                            startX: 0,
-                            startY: 0,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
+                board[y * 13 + x] = {
+                    pipe: tees[counter],
+                    water: {
+                        startX: 0,
+                        startY: 0,
+                        width: 0,
+                        height: 0,
+                        filled: false,
+                        initalized: false
+                    }
+                };
                 counter++;
             }
             else{
@@ -278,30 +182,17 @@ canvas.oncontextmenu = function (event) {
         }
         else if (pipe.type == "short") {
             if (counter <= shorts.length - 1) {
-                if (pipe.rotation == 0) {
-                    board[y * 13 + x] = {
-                        pipe: shorts[counter],
-                        water: {
-                            startX: 30,
-                            startY: 0,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
-                else if (pipe.rotation == 1) {
-                    board[y * 13 + x] = {
-                        pipe: shorts[counter],
-                        water: {
-                            startX: 0,
-                            startY: 30,
-                            width: 10,
-                            height: 10,
-                            filled: false
-                        }
-                    };
-                }
+                board[y * 13 + x] = {
+                    pipe: shorts[counter],
+                    water: {
+                        startX: 0,
+                        startY: 0,
+                        width: 0,
+                        height: 0,
+                        filled: false,
+                        initalized: false
+                    }
+                };
                 if (debug) {
                     console.log("rotate short, counter: " + counter);
                 }
@@ -355,7 +246,7 @@ function update(elapsedTime) {
     for (var y = 0; y < 13; y++) {
         for (var x = 0; x < 13; x++) {
             var index = y * 13 + x;
-            console.log("index: " + index);
+            //console.log("index: " + index);
             if (board[index]) {
                 var pipe = board[index].pipe;
                 var water = board[index].water;
@@ -364,41 +255,100 @@ function update(elapsedTime) {
                     //console.log("previousIndex: " + previousIndex);
                 }
                 timer += elapsedTime;
-                if (index == previousIndex && !water.filled && timer > MS_PER_FRAME) {
+                if (index == currIndex && !water.filled && timer > MS_PER_FRAME) {
                     timer = 0;
                     //console.log("moving water");
                     if (pipe.type == "elbow") {
                         if (pipe.rotation == 0) {
-
+                            water.x = 30;
+                            water.width = 10;
+                            water.height = 10;
+                            if (water.height != 54 && !water.filled) {
+                                water.width++;
+                                //water.startX++;
+                            }
+                            else{
+                                water.filled = true;
+                            }
                         }
                         else if (pipe.rotation == 1) {
-
+                            if (water.width != 54 && !water.filled) {
+                                water.width++;
+                                water.startX++;
+                            }
+                            else{
+                                water.filled = true;
+                            }
                         }
                         else if (pipe.rotation == 2) {
-
+                            if (water.width != 54 && !water.filled) {
+                                water.width++;
+                                water.startX++;
+                            }
+                            else{
+                                water.filled = true;
+                            }
                         }
                         else if (pipe.rotation == 3) {
-
+                            if (water.width != 54 && !water.filled) {
+                                water.width++;
+                                water.startX++;
+                            }
+                            else{
+                                water.filled = true;
+                            }
                         }
                     }
                     if (pipe.type == "tee") {
                         if (pipe.rotation == 0) {
-
+                            if (water.width != 54 && !water.filled) {
+                                water.width++;
+                                water.startX++;
+                            }
+                            else{
+                                water.filled = true;
+                            }
                         }
                         else if (pipe.rotation == 1) {
-
+                            if (water.width != 54 && !water.filled) {
+                                water.width++;
+                                water.startX++;
+                            }
+                            else{
+                                water.filled = true;
+                            }
                         }
                         else if (pipe.rotation == 2) {
-
+                            if (water.width != 54 && !water.filled) {
+                                water.width++;
+                                water.startX++;
+                            }
+                            else{
+                                water.filled = true;
+                            }
                         }
                         else if (pipe.rotation == 3) {
-
+                            if (water.width != 54 && !water.filled) {
+                                water.width++;
+                                water.startX++;
+                            }
+                            else{
+                                water.filled = true;
+                            }
                         }
                     }
                     if (pipe.type == "short") {
                         if (pipe.rotation == 0) {
+                            if(!water.initalized) {
+                                water.startY = 30;
+                                water.width = 10;
+                                water.height = 10;
+                                water.initalized = true;
+                            }
                             if (water.width != 54 && !water.filled) {
                                 water.width++;
+                                //water.startX++;
+                                console.log("water.width: " + water.width + "water.startX: " + water.startX);
                             }
                             else{
                                 water.filled = true;
@@ -406,8 +356,16 @@ function update(elapsedTime) {
                             }
                         }
                         else if (pipe.rotation == 1) {
+                            if(!water.initalized) {
+                                water.startX = 30;
+                                water.width = 10;
+                                water.height = 10;
+                                water.initalized = true;
+                            }
                             if (water.height != 54 && !water.filled) {
                                 water.height++;
+                                //water.startY++;
+                                console.log("water.height: " + water.height + "water.startY: " + water.startY);
                             }
                             else {
                                 water.filled = true;
@@ -415,7 +373,7 @@ function update(elapsedTime) {
                         }
                     }
                 }
-                else if (index == previousIndex && water.filled) {
+                else if (index == currIndex && water.filled) {
                     var nextIndex;
                     if (x + 1 < 13) {
                         nextIndex = y * 13 + (x + 1);
@@ -425,7 +383,8 @@ function update(elapsedTime) {
                     }
                     
                     if (board[nextIndex]){
-                        previousIndex = nextIndex;
+                        currIndex = nextIndex;
+                        previousIndex = index;
                         console.log("next pipe: " + nextIndex);
                     }
                 }
