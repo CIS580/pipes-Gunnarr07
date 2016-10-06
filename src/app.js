@@ -82,18 +82,7 @@ for (i= pipes.length; i; i--) {
 // pipes.push(longs[1]);
 
 // Array of pipes and empty grides to start the game, length of 156 blocks
-var board = new Array(156);
-// var board = [];
-// for(var i = 0; i < 156; i++) {
-//     board[i] = {};
-// }
-/*
-while (pipes.length > 0) {
-    var index = Math.floor(Math.random() * (pipes.length - 1));
-    board.push({ pipes: pipes[index]});
-    pipes.splice(index, 1);
-}
-*/
+var board = new Array(169);
 
 var nextPipe = pipes[Math.floor(Math.random() * pipes.length)];
 
@@ -119,17 +108,17 @@ canvas.onclick = clickhandler;
 function clickhandler(event) {
     event.preventDefault();
     // TODO: Place or rotate pipe tile
-    var x = Math.floor((event.offsetX - 110) / 69);
-    var y = Math.floor((event.offsetY - 20) / 69);
+    var x = Math.floor((event.offsetX - 150) / 64);
+    var y = Math.floor((event.offsetY - 20) / 64);
     // var pipe = board[y * 13 - x];
     //event.which 1=left, 3=right
     switch (event.which) {
         case 1:
             // Left mouse click
             // Place pipe tile
-            if (!board[y * 12 + x]) {
+            if (!board[y * 13 + x]) {
                 placed = true;
-                board[y * 12 + x] = nextPipe;
+                board[y * 13 + x] = nextPipe;
                 console.log("x: " + x + "y: " + y);
             }
 
@@ -157,13 +146,13 @@ canvas.oncontextmenu = function (event) {
         console.log("context menu event");
         console.log(state);
     }
-    var x = Math.floor((event.offsetX - 110) / 69);
-    var y = Math.floor((event.offsetY - 20) / 69);
-    var pipe = board[y * 12 + x];
+    var x = Math.floor((event.offsetX - 150) / 64);
+    var y = Math.floor((event.offsetY - 20) / 64);
+    var pipe = board[y * 13 + x];
     if (pipe) {
         if(pipe.type == "elbow") {
             if (counter <= elbows.length - 1) {
-                board[y * 12 + x] = elbows[counter];
+                board[y * 13 + x] = elbows[counter];
                 counter++;
                 if (debug) {
                     console.log("counter: " + counter);
@@ -175,7 +164,7 @@ canvas.oncontextmenu = function (event) {
         }
         else if (pipe.type == "tee") {
             if (counter <= tees.length - 1) {
-                board[y * 12 + x] = tees[counter];
+                board[y * 13 + x] = tees[counter];
                 counter++;
             }
             else{
@@ -184,7 +173,7 @@ canvas.oncontextmenu = function (event) {
         }
         else if (pipe.type == "short") {
             if (counter <= shorts.length - 1) {
-                board[y * 12 + x] = shorts[counter];
+                board[y * 13 + x] = shorts[counter];
                 if (debug) {
                     console.log("rotate short counter: " + counter);
                 }
@@ -202,9 +191,9 @@ canvas.onmousemove = function(event) {
   event.preventDefault();
   currentX = event.offsetX;
   currentY = event.offsetY;
-  var x = Math.floor((currentX - 110) / 69);
-  var y = Math.floor((currentY - 20) / 69);
-  currentIndex = y * 12 + x;
+  var x = Math.floor((currentX - 150) / 64);
+  var y = Math.floor((currentY - 20) / 64);
+  currentIndex = y * 13 + x;
 }
 
 /**
@@ -235,9 +224,9 @@ function update(elapsedTime) {
     }
 
     // TODO: Advance the fluid
-    for (var y = 0; y < 12; y++) {
-        for (var x = 0; x < 12; x++) {
-            var pipe = board[y * 12 + x];
+    for (var y = 0; y < 13; y++) {
+        for (var x = 0; x < 13; x++) {
+            var pipe = board[y * 13 + x];
             if (pipe) {
                 if (pipe.type == "elbow") {
                     if (pipe.rotation == 0) {
@@ -299,20 +288,21 @@ function render(elapsedTime, ctx) {
     );
 
     // TODO: Render the board
-    for (var y = 0; y < 12; y++) {
-        for (var x = 0; x < 12; x++) {
-            //var i = y * 6 + x;
-            var pipe = board[y * 12 + x];
+    for (var y = 0; y < 13; y++) {
+        for (var x = 0; x < 13; x++) {
+            ctx.strokeStyle = '#333333';
+            ctx.strokeRect(x * 64 + 150, y * 64 + 20, 64, 64);
+            var pipe = board[y * 13 + x];
             if(pipe){
                 // render water
                 ctx.fillStyle = "#3333ff";
-                ctx.fillRect((x * 69 + 110), (y * 69 + 20) + 30, 30, 10);
+                ctx.fillRect((x * 64 + 150), (y * 64 + 20) + 30, 30, 10);
                 
                 ctx.drawImage(image,
                     // Source rect
                     pipe.x, pipe.y, pipe.width, pipe.height,
                     // Dest rect
-                    x * 69 + 110, y * 69 + 20, 69, 69
+                    x * 64 + 150, y * 64 + 20, 64, 64
                 );
             }
             else{
@@ -320,19 +310,19 @@ function render(elapsedTime, ctx) {
                  // ctx.fillStyle = "#3333ff";
                 ctx.fillStyle = "grey";
                 // 165 allows 2px of space between each card
-                ctx.fillRect(x * 69 + 110, y * 69 + 20, 64, 64);
+                ctx.fillRect(x * 64 + 150, y * 64 + 20, 64, 64);
             }
         }
     }
 
     if(debug){
-        var x = currentIndex % 12;
-        var y = Math.floor(currentIndex / 12);
+        var x = currentIndex % 13;
+        var y = Math.floor(currentIndex / 13);
 
         ctx.fillStyle = "#ff0000";
         ctx.beginPath();
         ctx.arc(currentX, currentY, 3, 0, 2*Math.PI);
-        ctx.rect(x * 69 + 110, y * 69 + 20, 69, 69);
+        ctx.rect(x * 64 + 150, y * 64 + 20, 64, 64);
         ctx.stroke();
     }
 }
