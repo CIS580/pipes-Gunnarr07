@@ -85,8 +85,8 @@ var endIndex = Math.floor(Math.random() * (board.length - 1));
 var currIndex = startIndex;
 var previousIndex;
 
-board[startIndex] = { pipe: startPipe, water: { startX: 0, startY: 30, width: 10, height: 10, filled: false, initalized: true } };
-board[endIndex] = { pipe: endPipe, water: { startX: 0, startY: 30, width: 0, height: 0, filled: false, initalized: false } };
+board[startIndex] = { pipe: startPipe, index: startIndex, water: { startX: 0, startY: 30, width: 10, height: 10, filled: false, initalized: true } };
+board[endIndex] = { pipe: endPipe, index: endIndex, water: { startX: 0, startY: 30, width: 0, height: 0, filled: false, initalized: false } };
 
 canvas.onclick = clickhandler;
 function clickhandler(event) {
@@ -104,6 +104,7 @@ function clickhandler(event) {
                 placed = true;
                 board[y * 13 + x] = {
                     pipe: nextPipe,
+                    index: y * 13 + x,
                     water: {
                         startX: 0,
                         startY: 0,
@@ -150,6 +151,7 @@ canvas.oncontextmenu = function (event) {
             if (counter <= elbows.length - 1) {
                 board[y * 13 + x] = {
                     pipe: elbows[counter],
+                    index: y * 13 + x,
                     water: {
                         startX: 0,
                         startY: 0,
@@ -172,6 +174,7 @@ canvas.oncontextmenu = function (event) {
             if (counter <= tees.length - 1) {
                 board[y * 13 + x] = {
                     pipe: tees[counter],
+                    index: y * 13 + x,
                     water: {
                         startX: 0,
                         startY: 0,
@@ -191,6 +194,7 @@ canvas.oncontextmenu = function (event) {
             if (counter <= shorts.length - 1) {
                 board[y * 13 + x] = {
                     pipe: shorts[counter],
+                    index: y * 13 + x,
                     water: {
                         startX: 0,
                         startY: 0,
@@ -273,8 +277,9 @@ function update(elapsedTime) {
                                 water.height = 10;
                                 water.initalized = true;
                             }
-                            if (water.height != 54 && !water.filled) {
-                                water.width++;
+                            if (water.startX != 54 && !water.filled) {
+                                water.startX++;
+                                water.startY--;
                                 //water.startX++;
                             }
                             else{
@@ -299,18 +304,31 @@ function update(elapsedTime) {
                             }
                         }
                         else if (pipe.rotation == 2) {
-                            if (water.width != 54 && !water.filled) {
-                                water.width++;
+                            if(!water.initalized) {
+                                water.startX = 30;
+                                water.width = 10;
+                                water.height = 10;
+                                water.initalized = true;
+                            }
+                            if (water.startY != 54 && !water.filled) {
+                                //water.width++;
                                 water.startX++;
+                                water.startY++;
                             }
                             else{
                                 water.filled = true;
                             }
                         }
                         else if (pipe.rotation == 3) {
-                            if (water.width != 54 && !water.filled) {
-                                water.width++;
-                                water.startX++;
+                            if(!water.initalized) {
+                                water.startX = 30;
+                                water.width = 10;
+                                water.height = 10;
+                                water.initalized = true;
+                            }
+                            if (water.startY != 30 && !water.filled) {
+                                water.startX--;
+                                water.startY++;
                             }
                             else{
                                 water.filled = true;
@@ -448,10 +466,7 @@ function render(elapsedTime, ctx) {
                 );
             }
             else{
-                // draw the back of the card (160x160px)
-                 // ctx.fillStyle = "#3333ff";
                 ctx.fillStyle = "grey";
-                // 165 allows 2px of space between each card
                 ctx.fillRect(x * 64 + 150, y * 64 + 20, 64, 64);
             }
         }
