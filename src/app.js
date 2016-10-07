@@ -2,7 +2,7 @@
 
 /* Classes */
 const Game = require('./game');
-const MS_PER_FRAME = 1000/8;
+const MS_PER_FRAME = 1000/1;
 
 /* Global variables */
 var canvas = document.getElementById('screen');
@@ -14,6 +14,11 @@ var placePipe = new Audio();
 placePipe.src = 'assets/placePipe.wav';
 var rotate = new Audio();
 rotate.src = 'assets/rotate.wav';
+
+var music = new Audio();
+music.src = 'assets/8-bit Detective.wav'
+// music.loop = true;
+// music.play();
 
 var debug = true;
 
@@ -94,43 +99,21 @@ function clickhandler(event) {
     // TODO: Place or rotate pipe tile
     var x = Math.floor((event.offsetX - 150) / 64);
     var y = Math.floor((event.offsetY - 20) / 64);
-    // var pipe = board[y * 13 - x];
-    //event.which 1=left, 2=right
-    switch (event.which) {
-        case 1:
-            // Left mouse click
-            // Place pipe tile
-            if (!board[y * 13 + x]) {
-                placed = true;
-                board[y * 13 + x] = {
-                    pipe: nextPipe,
-                    index: y * 13 + x,
-                    water: {
-                        startX: 0,
-                        startY: 0,
-                        width: 0,
-                        height: 0,
-                        filled: false,
-                        initalized: false
-                    }
-                };
-                placePipe.play();
-                console.log("x: " + x + "y: " + y);
+    if (!board[y * 13 + x]) {
+        placed = true;
+        board[y * 13 + x] = {
+            pipe: nextPipe,
+            index: y * 13 + x,
+            water: {
+                startX: 0,
+                startY: 0,
+                width: 0,
+                height: 0,
+                filled: false,
+                initalized: false
             }
-
-            break;
-        case 2:
-            // Right mouse click
-            // Rotate the pipe tile
-            if (debug) {
-                console.log("rotate pipe");
-            }
-            if(pipe.type == "elbow") {
-                elbows.forEach(function(elbow){
-                    pipe = elbow;
-                });
-            }
-            break;
+        };
+        placePipe.play();
     }
 }
 
@@ -383,8 +366,6 @@ function update(elapsedTime) {
                             }
                             if (water.width != 54 && !water.filled) {
                                 water.width++;
-                                //water.startX++;
-                                console.log("water.width: " + water.width + "water.startX: " + water.startX);
                             }
                             else{
                                 water.filled = true;
