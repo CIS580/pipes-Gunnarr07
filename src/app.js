@@ -10,6 +10,11 @@ var game = new Game(canvas, update, render);
 var image = new Image();
 image.src = 'assets/pipes.png';
 
+var placePipe = new Audio();
+placePipe.src = 'assets/placePipe.wav';
+var rotate = new Audio();
+rotate.src = 'assets/rotate.wav';
+
 var debug = true;
 
 // If the next pip has been placed on the board
@@ -108,6 +113,7 @@ function clickhandler(event) {
                         initalized: false
                     }
                 };
+                placePipe.play();
                 console.log("x: " + x + "y: " + y);
             }
 
@@ -138,6 +144,7 @@ canvas.oncontextmenu = function (event) {
     var x = Math.floor((event.offsetX - 150) / 64);
     var y = Math.floor((event.offsetY - 20) / 64);
     if (board[y * 13 + x]) {
+        rotate.play();
         var pipe = board[y * 13 + x].pipe;
         if(pipe.type == "elbow") {
             if (counter <= elbows.length - 1) {
@@ -260,9 +267,12 @@ function update(elapsedTime) {
                     //console.log("moving water");
                     if (pipe.type == "elbow") {
                         if (pipe.rotation == 0) {
-                            water.x = 30;
-                            water.width = 10;
-                            water.height = 10;
+                            if(!water.initalized) {
+                                water.startX = 30;
+                                water.width = 10;
+                                water.height = 10;
+                                water.initalized = true;
+                            }
                             if (water.height != 54 && !water.filled) {
                                 water.width++;
                                 //water.startX++;
@@ -272,9 +282,17 @@ function update(elapsedTime) {
                             }
                         }
                         else if (pipe.rotation == 1) {
-                            if (water.width != 54 && !water.filled) {
-                                water.width++;
+                            if(!water.initalized) {
+                                water.startY = 30;
+                                water.width = 10;
+                                water.height = 10;
+                                water.initalized = true;
+                            }
+                            if (water.startY != 54 && !water.filled) {
+                                // water.width++;
+                                // water.height++;
                                 water.startX++;
+                                water.startY++;
                             }
                             else{
                                 water.filled = true;
