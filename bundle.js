@@ -18,8 +18,8 @@ rotate.src = 'assets/rotate.wav';
 
 var music = new Audio();
 music.src = 'assets/8-bit Detective.wav'
-// music.loop = true;
-// music.play();
+music.loop = true;
+music.play();
 
 var debug = true;
 
