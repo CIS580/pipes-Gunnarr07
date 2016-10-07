@@ -80,6 +80,7 @@ for (i= pipes.length; i; i--) {
 
 // Array of pipes and empty grides to start the game, length of 156 blocks
 var board = new Array(169);
+var waterPipe = [];
 
 var nextPipe = pipes[Math.floor(Math.random() * pipes.length)];
 
@@ -127,7 +128,7 @@ canvas.oncontextmenu = function (event) {
     }
     var x = Math.floor((event.offsetX - 150) / 64);
     var y = Math.floor((event.offsetY - 20) / 64);
-    if (board[y * 13 + x]) {
+    if (board[y * 13 + x] && !board[y * 13 + x].water.filled) {
         rotate.play();
         var pipe = board[y * 13 + x].pipe;
         if(pipe.type == "elbow") {
@@ -382,7 +383,6 @@ function update(elapsedTime) {
                             if (water.height != 54 && !water.filled) {
                                 water.height++;
                                 //water.startY++;
-                                console.log("water.height: " + water.height + "water.startY: " + water.startY);
                             }
                             else {
                                 water.filled = true;
